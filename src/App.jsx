@@ -10,34 +10,27 @@ function App() {
   const [todoArray, setTodoArray] = useState(
     JSON.parse(localStorage.getItem("todos")) || []
   );
-
-  const [todos, setTodos] = useState(
-    JSON.parse(localStorage?.getItem("todos")) || []
-  );
-
+  const [todos, setTodos] = useState(todoArray);
   const [formData, setFormData] = useState({ todo: "" });
   const [currentTab, setCurrentTab] = useState("all");
   const [activeTodosCount, setActiveTodosCount] = useState();
 
+  // for current number of active
   useEffect(() => {
-    let hi = todos.filter(todo => !todo.isCompleted).length;
-    console.log(hi);
-  }, []);
+    setActiveTodosCount(todoArray.filter(todo => !todo.isCompleted).length);
+  }, [todoArray]);
 
   // for handling tabs
   useEffect(() => {
     if (currentTab === "all") {
-      setTodoArray(todos);
+      setTodos(todoArray);
     }
     if (currentTab === "active") {
-      const activetodos = todos.filter(todo => !todo.isCompleted);
-      let length = activetodos.length;
-      console.log(length);
-      setTodoArray(todos.filter(todo => !todo.isCompleted));
+      setTodos(todoArray.filter(todo => !todo.isCompleted));
     }
 
     if (currentTab === "completed") {
-      setTodoArray(todos.filter(todo => todo.isCompleted === true));
+      setTodos(todoArray.filter(todo => todo.isCompleted === true));
     }
   }, [currentTab]);
 
@@ -60,9 +53,11 @@ function App() {
         isCompleted: false,
       };
       setTodoArray(prev => [newTodo, ...prev]);
+      setTodos(prev => [newTodo, ...prev]);
       setFormData({ todo: "" });
     }
   };
+  
   // addng the todo to local storage after enter key is pressed
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todoArray));
@@ -77,7 +72,7 @@ function App() {
     });
 
     setTodoArray(currentTodo);
-    localStorage.setItem("todos", JSON.stringify(currentTodo));
+    setTodos(currentTodo);
   };
 
   const handleCurrentTab = tab => setCurrentTab(tab);
@@ -85,6 +80,7 @@ function App() {
   const handleCompleted = () => {
     const incompleteTodos = todoArray.filter(todo => !todo.isCompleted);
     setTodoArray(incompleteTodos);
+    setTodos(incompleteTodos);
   };
 
   return (
@@ -128,7 +124,7 @@ function App() {
         </div>
 
         <div className="max-h-[60%] overflow-auto shadow-lg">
-          {todoArray.map(todo => (
+          {todos.map(todo => (
             <div
               key={todo.id}
               className={
@@ -160,7 +156,13 @@ function App() {
               : "shadow-lg p-4 flex items-center justify-between gap-4 w-full bg-white rounded-sm"
           }
         >
-          <p>{}</p>
+          <p>
+            {activeTodosCount <= 0
+              ? "No item Left"
+              : activeTodosCount === 1
+              ? "1 Item Left"
+              : activeTodosCount + " items Left"}
+          </p>
           <div className="hidden md:flex items-center justify-between gap-3">
             <button
               onClick={() => handleCurrentTab("all")}
