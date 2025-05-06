@@ -114,7 +114,7 @@ function App() {
               : "mb-4 shadow-lg flex items-center gap-4 w-full p-4 bg-white rounded-sm"
           }
         >
-          <div className="w-10 h-10 rounded-full border-2 "></div>
+          <div className="aspect-square w-10 h-10 rounded-full border-2 "></div>
           <form onSubmit={handleSubmit} className="w-full">
             <input
               type="text"
