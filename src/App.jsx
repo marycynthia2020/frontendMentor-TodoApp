@@ -57,7 +57,7 @@ function App() {
       setFormData({ todo: "" });
     }
   };
-  
+
   // addng the todo to local storage after enter key is pressed
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todoArray));
@@ -82,6 +82,11 @@ function App() {
     setTodoArray(incompleteTodos);
     setTodos(incompleteTodos);
   };
+  const handleDelete = (id) => {
+    const todosLeft = todoArray.filter(todo => todo.id !== id)
+    setTodoArray(todosLeft)
+    setTodos(todosLeft)
+  }
 
   return (
     <div
@@ -144,7 +149,7 @@ function App() {
                 <img src={todo.isCompleted ? check : null} alt="" />
               </div>
               <div className={todo.isCompleted ? "done" : ""}>{todo.task}</div>
-              <img src={cross} alt="" className="ml-auto" />
+              <img src={cross} alt="" className="ml-auto" onClick={() => handleDelete(todo.id)}/>
             </div>
           ))}
         </div>
@@ -161,7 +166,7 @@ function App() {
               ? "No item Left"
               : activeTodosCount === 1
               ? "1 Item Left"
-              : activeTodosCount + " items Left"}
+              : activeTodosCount + " Items Left"}
           </p>
           <div className="hidden md:flex items-center justify-between gap-3">
             <button
