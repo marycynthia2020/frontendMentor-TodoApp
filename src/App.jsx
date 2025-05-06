@@ -127,7 +127,7 @@ function App() {
           </form>
         </div>
 
-        <div className="max-h-[60%] overflow-auto shadow-lg">
+        <div className="max-h-[50%] overflow-auto shadow-lg">
           {todoArray.map(todo => (
             <div
               key={todo.id}
