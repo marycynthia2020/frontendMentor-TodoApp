@@ -32,7 +32,7 @@ function App() {
     if (currentTab === "completed") {
       setTodos(todoArray.filter(todo => todo.isCompleted === true));
     }
-  }, [currentTab]);
+  }, [currentTab, todoArray]);
 
   const { darkTheme, setDarkTheme } = useContext(darkThemeProvider);
   const toggleDarkTheme = () => setDarkTheme(prev => !prev);
@@ -111,11 +111,11 @@ function App() {
         <div
           className={
             darkTheme
-              ? "mb-4 shadow-lg flex items-center gap-4 w-full p-4 bg-[#24283c] rounded-sm"
-              : "mb-4 shadow-lg flex items-center gap-4 w-full p-4 bg-white rounded-sm"
+              ? "mb-4 shadow-lg flex items-center gap-4 w-full p-6 bg-[#24283c] rounded-sm"
+              : "mb-4 shadow-lg flex items-center gap-4 w-full p-6 bg-white rounded-sm"
           }
         >
-          <div className="aspect-square w-10 h-10 rounded-full border-2 "></div>
+          <div className="aspect-square w-6 h-6 rounded-full border "></div>
           <form onSubmit={handleSubmit} className="w-full">
             <input
               type="text"
@@ -129,29 +129,29 @@ function App() {
         </div>
 
         <div className="max-h-[60%] overflow-auto shadow-lg">
-          {todos.map(todo => (
+          {todos.length>0? todos.map(todo => (
             <div
               key={todo.id}
               className={
                 darkTheme
-                  ? "border-b flex items-center gap-4 w-full p-4 bg-[#24283c] rounded-sm"
-                  : "border-b flex items-center gap-4 w-full p-4 bg-white rounded-sm"
+                  ? "border-b flex items-center gap-4 w-full p-6 bg-[#24283c] rounded-sm task"
+                  : "border-b flex items-center gap-4 w-full p-6 bg-white rounded-sm task"
               }
             >
               <div
                 className={
                   todo.isCompleted
-                    ? " aspect-square w-10 h-10 max-h-10 rounded-full border-2 bg-[#9b94ed] flex items-center justify-center"
-                    : "aspect-square w-10 h-10 rounded-full border-2 flex items-center justify-center"
+                    ? " circle gradient "
+                    : "circle"
                 }
                 onClick={() => handleClick(todo.id)}
               >
                 <img src={todo.isCompleted ? check : null} alt="" />
               </div>
               <div className={todo.isCompleted ? "done" : ""}>{todo.task}</div>
-              <img src={cross} alt="" className="ml-auto" onClick={() => handleDelete(todo.id)}/>
+              <img src={cross} alt="" className="ml-auto md:hidden delete " onClick={() => handleDelete(todo.id)}/>
             </div>
-          ))}
+          )): currentTab !== "all"? <p className={darkTheme?"p-4 bg-[#24283c] mb-2":"p-4 bg-white mb-2"}>No {currentTab} items</p>:""}
         </div>
 
         <div
