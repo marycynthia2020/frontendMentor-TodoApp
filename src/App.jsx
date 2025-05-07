@@ -134,8 +134,8 @@ function App() {
               key={todo.id}
               className={
                 darkTheme
-                  ? "border-b flex items-center gap-4 w-full p-6 bg-[#24283c] rounded-sm task"
-                  : "border-b flex items-center gap-4 w-full p-6 bg-white rounded-sm task"
+                  ? "border-b flex items-center gap-4 w-full p-6 bg-[#24283c] rounded-sm task shadow-lg"
+                  : "border-b flex items-center gap-4 w-full p-6 bg-white rounded-sm task shadow-lg"
               }
             >
               <div
