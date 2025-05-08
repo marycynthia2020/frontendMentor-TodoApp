@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { darkThemeProvider } from "../context/Themecontext";
 
-const Tabs = (props) => {
+const MobileTab = (props) => {
     const {darkTheme} = useContext(darkThemeProvider)
   return (
     <div
@@ -33,4 +33,4 @@ const Tabs = (props) => {
   );
 };
 
-export default Tabs;
+export default MobileTab;

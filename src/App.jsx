@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import check from "/icon-check.svg";
-import cross from "/icon-cross.svg";
-import moon from "/icon-moon.svg";
-import sun from "/icon-sun.svg";
 import { darkThemeProvider } from "./context/Themecontext";
 import { nanoid } from "nanoid";
+import TodoComponent from "./components/TodoComponent";
+import MobileTab from "./components/MobileTab";
+import DesktopTab from "./components/DesktopTab";
+import Header from "./components/Header";
+import Form from "./components/Form";
+import { DragDropContext } from "@hello-pangea/dnd";
 
 function App() {
   const [todoArray, setTodoArray] = useState(
@@ -82,143 +84,76 @@ function App() {
     setTodoArray(incompleteTodos);
     setTodos(incompleteTodos);
   };
-  const handleDelete = (id) => {
-    const todosLeft = todoArray.filter(todo => todo.id !== id)
-    setTodoArray(todosLeft)
-    setTodos(todosLeft)
+  const handleDelete = id => {
+    const todosLeft = todoArray.filter(todo => todo.id !== id);
+    setTodoArray(todosLeft);
+    setTodos(todosLeft);
+  };
+
+  // drag n drop
+  const onDragEnd =(result)=> {
+    const {destination, source, draggableId} = result
+    if(!destination) {
+      return
+    }
+    if(destination.draggableId === source.draggableId && destination.index === source.index) {
+      return
+    }
+    const newTodos = Array.from(todos)
+    const [reOrderedItem] = newTodos.splice(source.index, 1)
+    newTodos.splice(destination.index, 0, reOrderedItem)
+    setTodos(newTodos)
+    setTodoArray(newTodos)
+
   }
 
   return (
-    <div
-      className={
-        darkTheme
-          ? "main  bg-mobileDark md:bg-desktopDark"
-          : "main  bg-mobileLight md:bg-desktopLight"
-      }
-    >
-      <div className=" w-[90vw] lg:w-4/5 xl:w-3/5 max-w-[800px] mx-auto  h-[90vh] lg:h-[75%] ">
-        <div className=" mb-10 flex justify-between items-center">
-          <h1 className="text-3xl md:text-4xl tracking-[0.5em] text-white font-bold">
-            TODO
-          </h1>
-          <img
-            src={darkTheme ? sun : moon}
-            alt=""
-            onClick={toggleDarkTheme}
-            className="cursor-pointer"
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div
+        className={
+          darkTheme
+            ? "main  bg-mobileDark md:bg-desktopDark "
+            : "main  bg-mobileLight md:bg-desktopLight"
+        }
+      >
+        <div className=" w-[90vw] lg:w-4/5 xl:w-3/5 max-w-[800px] mx-auto  h-[90vh] lg:h-[75vh] ">
+          <Header toggleDarkTheme={toggleDarkTheme} />
+        <Form formData ={formData} handleChange={handleChange} handleSubmit={handleSubmit}  />
+
+          <TodoComponent
+            todos={todos}
+            currentTab={currentTab}
+            handleClick={handleClick}
+            handleDelete={handleDelete}
           />
-        </div>
-        <div
-          className={
-            darkTheme
-              ? "mb-4 shadow-lg flex items-center gap-4 w-full p-6 bg-[#24283c] rounded-sm"
-              : "mb-4 shadow-lg flex items-center gap-4 w-full p-6 bg-white rounded-sm"
-          }
-        >
-          <div className="aspect-square w-6 h-6 rounded-full border "></div>
-          <form onSubmit={handleSubmit} className="w-full">
-            <input
-              type="text"
-              className=" outline-none w-full bg-transparent"
-              placeholder="Currently typing "
-              name="todo"
-              value={formData.todo}
-              onChange={handleChange}
+
+          <div
+            className={
+              darkTheme
+                ? "shadow-lg p-4 flex items-center justify-between gap-4 w-full bg-[#24283c] rounded-sm"
+                : "shadow-lg p-4 flex items-center justify-between gap-4 w-full bg-white rounded-sm "
+            }
+          >
+            <p>
+              {activeTodosCount}{" "}
+              {activeTodosCount <= 1 ? " item left" : " items left"}
+            </p>
+            <DesktopTab
+              currentTab={currentTab}
+              handleCurrentTab={handleCurrentTab}
             />
-          </form>
-        </div>
-
-        <div className="max-h-[60%] overflow-auto shadow-lg">
-          {todos.length>0? todos.map(todo => (
-            <div
-              key={todo.id}
-              className={
-                darkTheme
-                  ? "border-b flex items-center gap-4 w-full p-6 bg-[#24283c] rounded-sm task shadow-lg"
-                  : "border-b flex items-center gap-4 w-full p-6 bg-white rounded-sm task shadow-lg"
-              }
-            >
-              <div
-                className={
-                  todo.isCompleted
-                    ? " circle gradient "
-                    : "circle"
-                }
-                onClick={() => handleClick(todo.id)}
-              >
-                <img src={todo.isCompleted ? check : null} alt="" />
-              </div>
-              <div className={todo.isCompleted ? "done" : ""}>{todo.task}</div>
-              <img src={cross} alt="" className="ml-auto md:hidden delete " onClick={() => handleDelete(todo.id)}/>
-            </div>
-          )): currentTab !== "all"? <p className={darkTheme?"p-4 bg-[#24283c] mb-2":"p-4 bg-white mb-2"}>No {currentTab} items</p>:""}
-        </div>
-
-        <div
-          className={
-            darkTheme
-              ? "shadow-lg p-4 flex items-center justify-between gap-4 w-full bg-[#24283c] rounded-sm"
-              : "shadow-lg p-4 flex items-center justify-between gap-4 w-full bg-white rounded-sm"
-          }
-        >
-          <p>
-            {activeTodosCount <= 0
-              ? "No item Left"
-              : activeTodosCount === 1
-              ? "1 Item Left"
-              : activeTodosCount + " Items Left"}
-          </p>
-          <div className="hidden md:flex items-center justify-between gap-3">
-            <button
-              onClick={() => handleCurrentTab("all")}
-              className={currentTab === "all" ? "active" : ""}
-            >
-              All
-            </button>
-            <button
-              onClick={() => handleCurrentTab("active")}
-              className={currentTab === "active" ? "active" : ""}
-            >
-              Active
-            </button>
-            <button
-              onClick={() => handleCurrentTab("completed")}
-              className={currentTab === "completed" ? "active" : ""}
-            >
-              Completed
-            </button>
+            <button onClick={handleCompleted}>Clear Completed</button>
           </div>
-          <button onClick={handleCompleted}>Clear Completed</button>
+          {/* for mobile */}
+          <MobileTab
+            currentTab={currentTab}
+            handleCurrentTab={handleCurrentTab}
+          />
+           <div className="text-[#4D5066] mt-10 text-center" >Drag and drop to reorder list</div>
         </div>
-        {/* for mobile */}
-        <div
-          className={
-            darkTheme
-              ? " mt-4 flex items-center justify-between gap-3 md:hidden shadow-lg p-4 bg-[#24283c] rounded-sm"
-              : " mt-4 flex items-center justify-between gap-3 md:hidden shadow-lg p-4 bg-white rounded-sm"
-          }
-        >
-          <button
-            onClick={() => handleCurrentTab("all")}
-            className={currentTab === "all" ? "active" : ""}
-          >
-            All
-          </button>
-          <button
-            onClick={() => handleCurrentTab("active")}
-            className={currentTab === "active" ? "active" : ""}
-          >
-            Active
-          </button>
-          <button
-            onClick={() => handleCurrentTab("completed")}
-            className={currentTab === "completed" ? "active" : ""}
-          >
-            Completed
-          </button>
-        </div>
+       
       </div>
-    </div>
+    </DragDropContext>
   );
 }
 
