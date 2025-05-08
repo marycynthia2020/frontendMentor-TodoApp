@@ -103,10 +103,9 @@ function App() {
     ) {
       return;
     }
-    const newTodos = Array.from(todos);
+    const newTodos = Array.from(todoArray);
     const [reOrderedItem] = newTodos.splice(source.index, 1);
     newTodos.splice(destination.index, 0, reOrderedItem);
-    setTodos(newTodos);
     setTodoArray(newTodos);
   };
 
