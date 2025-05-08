@@ -46,6 +46,7 @@ function App() {
     });
   };
 
+  // adding todos to list when enter is pressed
   const handleSubmit = e => {
     e.preventDefault();
     if (formData.todo) {
@@ -91,21 +92,23 @@ function App() {
   };
 
   // drag n drop
-  const onDragEnd =(result)=> {
-    const {destination, source, draggableId} = result
-    if(!destination) {
-      return
+  const onDragEnd = result => {
+    const { destination, source, draggableId } = result;
+    if (!destination) {
+      return;
     }
-    if(destination.draggableId === source.draggableId && destination.index === source.index) {
-      return
+    if (
+      destination.draggableId === source.draggableId &&
+      destination.index === source.index
+    ) {
+      return;
     }
-    const newTodos = Array.from(todos)
-    const [reOrderedItem] = newTodos.splice(source.index, 1)
-    newTodos.splice(destination.index, 0, reOrderedItem)
-    setTodos(newTodos)
-    setTodoArray(newTodos)
-
-  }
+    const newTodos = Array.from(todos);
+    const [reOrderedItem] = newTodos.splice(source.index, 1);
+    newTodos.splice(destination.index, 0, reOrderedItem);
+    setTodos(newTodos);
+    setTodoArray(newTodos);
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -118,7 +121,11 @@ function App() {
       >
         <div className=" w-[90vw] lg:w-4/5 xl:w-3/5 max-w-[800px] mx-auto  h-[90vh] lg:h-[75vh] ">
           <Header toggleDarkTheme={toggleDarkTheme} />
-        <Form formData ={formData} handleChange={handleChange} handleSubmit={handleSubmit}  />
+          <Form
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
 
           <TodoComponent
             todos={todos}
@@ -149,9 +156,10 @@ function App() {
             currentTab={currentTab}
             handleCurrentTab={handleCurrentTab}
           />
-           <div className="text-[#4D5066] mt-10 text-center" >Drag and drop to reorder list</div>
+          <div className="text-[#4D5066] mt-10 text-center">
+            Drag and drop to reorder list
+          </div>
         </div>
-       
       </div>
     </DragDropContext>
   );
