@@ -12,33 +12,47 @@ function App() {
   const [todoArray, setTodoArray] = useState(
     JSON.parse(localStorage.getItem("todos")) || []
   );
-  const [todos, setTodos] = useState(todoArray);
+  // const [todos, setTodos] = useState(todoArray);
   const [formData, setFormData] = useState({ todo: "" });
   const [currentTab, setCurrentTab] = useState("all");
-  const [activeTodosCount, setActiveTodosCount] = useState();
-
-  // for current number of active
-  useEffect(() => {
-    setActiveTodosCount(todoArray.filter(todo => !todo.isCompleted).length);
-  }, [todoArray]);
-
-  // for handling tabs
-  useEffect(() => {
-    if (currentTab === "all") {
-      setTodos(todoArray);
-    }
-    if (currentTab === "active") {
-      setTodos(todoArray.filter(todo => !todo.isCompleted));
-    }
-
-    if (currentTab === "completed") {
-      setTodos(todoArray.filter(todo => todo.isCompleted === true));
-    }
-  }, [currentTab, todoArray]);
 
   const { darkTheme, setDarkTheme } = useContext(darkThemeProvider);
   const toggleDarkTheme = () => setDarkTheme(prev => !prev);
 
+  // for current number of active
+  const activeTodosCount = todoArray.filter(todo => !todo.isCompleted).length;
+
+  // for handling tabs
+  // useEffect(() => {
+  //   if (currentTab === "all") {
+  //     setTodos(todoArray);
+  //   }
+  //   if (currentTab === "active") {
+  //     setTodos(todoArray.filter(todo => !todo.isCompleted));
+  //   }
+
+  //   if (currentTab === "completed") {
+  //     setTodos(todoArray.filter(todo => todo.isCompleted === true));
+  //   }
+  // }, [currentTab, todoArray]);
+
+  const checkTabs = (currentTab) => {
+    if (currentTab === "all") {
+      // setTodos(todoArray);
+      return todoArray
+    }
+    if (currentTab === "active") {
+      // setTodos(todoArray.filter(todo => !todo.isCompleted));
+      return todoArray.filter(todo => !todo.isCompleted)
+    }
+
+    if (currentTab === "completed") {
+      // setTodos(todoArray.filter(todo => todo.isCompleted === true));
+      return todoArray.filter(todo => todo.isCompleted === true)
+    }
+  }
+
+  const todos = checkTabs(currentTab)
   const handleChange = e => {
     e.preventDefault();
     setFormData(prev => {
@@ -56,7 +70,7 @@ function App() {
         isCompleted: false,
       };
       setTodoArray(prev => [newTodo, ...prev]);
-      setTodos(prev => [newTodo, ...prev]);
+      // setTodos(prev => [newTodo, ...prev]);
       setFormData({ todo: "" });
     }
   };
@@ -75,7 +89,7 @@ function App() {
     });
 
     setTodoArray(currentTodo);
-    setTodos(currentTodo);
+    // setTodos(currentTodo);
   };
 
   const handleCurrentTab = tab => setCurrentTab(tab);
@@ -83,12 +97,12 @@ function App() {
   const handleCompleted = () => {
     const incompleteTodos = todoArray.filter(todo => !todo.isCompleted);
     setTodoArray(incompleteTodos);
-    setTodos(incompleteTodos);
+    // setTodos(incompleteTodos);
   };
   const handleDelete = id => {
     const todosLeft = todoArray.filter(todo => todo.id !== id);
     setTodoArray(todosLeft);
-    setTodos(todosLeft);
+    // setTodos(todosLeft);
   };
 
   // drag n drop

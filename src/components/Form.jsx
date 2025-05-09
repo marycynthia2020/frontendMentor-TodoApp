@@ -3,6 +3,7 @@ import { darkThemeProvider } from "../context/Themecontext";
 
 const Form = (props) => {
     const {darkTheme} = useContext(darkThemeProvider)
+    
   return (
     <div
       className={
@@ -16,7 +17,7 @@ const Form = (props) => {
         <input
           type="text"
           className=" outline-none w-full bg-transparent"
-          placeholder="Currently typing "
+          placeholder="Create a a new todo..."
           name="todo"
           value={props.formData.todo}
           onChange={props.handleChange}
