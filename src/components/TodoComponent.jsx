@@ -4,8 +4,24 @@ import check from "/icon-check.svg";
 import cross from "/icon-cross.svg";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 
-const TodoComponent = props => {
+const TodoComponent = ({todoArray, setTodoArray, todos, currentTab}) => {
   const { darkTheme } = useContext(darkThemeProvider);
+
+  const handleClick = id => {
+    const currentTodo = todoArray.map(todo => {
+      if (id === todo.id) {
+        return { ...todo, isCompleted: !todo.isCompleted };
+      }
+      return todo;
+    });
+
+    setTodoArray(currentTodo);
+  };
+
+  const handleDelete = id => {
+    const todosLeft = todoArray.filter(todo => todo.id !== id);
+    setTodoArray(todosLeft);
+  };
 
   return (
     <Droppable droppableId="todos">
@@ -15,8 +31,8 @@ const TodoComponent = props => {
           ref={provided.innerRef}
           {...provided.droppableProps}
         >
-          {props.todos.length > 0 ? (
-            props.todos.map((todo, index) => (
+          {todos.length > 0 ? (
+            todos.map((todo, index) => (
               <Draggable draggableId={todo.id} index={index} key={todo.id}>
                 {provided => (
                   <div
@@ -34,7 +50,7 @@ const TodoComponent = props => {
                       className={
                         todo.isCompleted ? " circle gradient " : "circle"
                       }
-                      onClick={() => props.handleClick(todo.id)}
+                      onClick={() => handleClick(todo.id)}
                     >
                       <img src={todo.isCompleted ? check : null} alt="" />
                     </div>
@@ -45,19 +61,19 @@ const TodoComponent = props => {
                       src={cross}
                       alt=""
                       className="ml-auto md:hidden delete "
-                      onClick={() => props.handleDelete(todo.id)}
+                      onClick={() => handleDelete(todo.id)}
                     />
                   </div>
                 )}
               </Draggable>
             ))
-          ) : props.currentTab !== "all" ? (
+          ) : currentTab !== "all" ? (
             <p
               className={
                 darkTheme ? "p-4 bg-[#24283c] mb-2" : "p-4 bg-white mb-2"
               }
             >
-              No {props.currentTab} items
+              No {currentTab} items
             </p>
           ) : (
             ""

@@ -1,9 +1,36 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { darkThemeProvider } from "../context/Themecontext";
+import { nanoid } from "nanoid";
 
-const Form = (props) => {
-    const {darkTheme} = useContext(darkThemeProvider)
-    
+const Form = ({ setTodoArray, todoArray }) => {
+  const [formData, setFormData] = useState({ todo: "" });
+  const { darkTheme } = useContext(darkThemeProvider);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (formData.todo) {
+      const newTodo = {
+        task: formData.todo,
+        id: nanoid(),
+        isCompleted: false,
+      };
+      setTodoArray(prev => [newTodo, ...prev]);
+      setFormData({ todo: "" });
+    }
+  };
+
+  // addng the todo to local storage after enter key is pressed
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todoArray));
+  }, [todoArray]);
+
+  const handleChange = e => {
+    e.preventDefault();
+    setFormData(prev => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
   return (
     <div
       className={
@@ -13,14 +40,14 @@ const Form = (props) => {
       }
     >
       <div className="aspect-square w-6 h-6 rounded-full border border-gray-500 "></div>
-      <form onSubmit={props.handleSubmit} className="w-full">
+      <form onSubmit={handleSubmit} className="w-full">
         <input
           type="text"
           className=" outline-none w-full bg-transparent"
           placeholder="Create a a new todo..."
           name="todo"
-          value={props.formData.todo}
-          onChange={props.handleChange}
+          value={formData.todo}
+          onChange={handleChange}
         />
       </form>
     </div>

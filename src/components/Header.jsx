@@ -3,8 +3,9 @@ import { darkThemeProvider } from "../context/Themecontext";
 import moon from "/icon-moon.svg";
 import sun from "/icon-sun.svg";
 
-const Header = (props) => {
-  const { darkTheme } = useContext(darkThemeProvider);
+const Header = () => {
+  const { darkTheme, setDarkTheme } = useContext(darkThemeProvider);
+   const toggleDarkTheme = () => setDarkTheme(prev => !prev);
   return (
     <div className=" mb-10 md:mb-16 flex justify-between items-center">
       <h1 className="text-3xl md:text-4xl tracking-[0.5em] text-white font-bold">
@@ -13,7 +14,7 @@ const Header = (props) => {
       <img
         src={darkTheme ? sun : moon}
         alt=""
-        onClick={props.toggleDarkTheme}
+        onClick={toggleDarkTheme}
         className="cursor-pointer"
       />
     </div>

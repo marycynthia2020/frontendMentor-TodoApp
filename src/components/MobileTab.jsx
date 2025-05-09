@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { darkThemeProvider } from "../context/Themecontext";
 
-const MobileTab = (props) => {
+const MobileTab = ({setCurrentTab, currentTab}) => {
     const {darkTheme} = useContext(darkThemeProvider)
+      const handleCurrentTab = tab => setCurrentTab(tab);
   return (
     <div
       className={
@@ -12,20 +13,20 @@ const MobileTab = (props) => {
       }
     >
       <button
-        onClick={() => props.handleCurrentTab("all")}
-        className={props.currentTab === "all" ? "active" : ""}
+        onClick={() =>handleCurrentTab("all")}
+        className={currentTab === "all" ? "active" : ""}
       >
         All
       </button>
       <button
-        onClick={() => props.handleCurrentTab("active")}
-        className={props.currentTab === "active" ? "active" : ""}
+        onClick={() => handleCurrentTab("active")}
+        className={currentTab === "active" ? "active" : ""}
       >
         Active
       </button>
       <button
-        onClick={() => props.handleCurrentTab("completed")}
-        className={props.currentTab === "completed" ? "active" : ""}
+        onClick={() => handleCurrentTab("completed")}
+        className={currentTab === "completed" ? "active" : ""}
       >
         Completed
       </button>

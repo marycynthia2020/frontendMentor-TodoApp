@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { darkThemeProvider } from "./context/Themecontext";
-import { nanoid } from "nanoid";
 import TodoComponent from "./components/TodoComponent";
 import MobileTab from "./components/MobileTab";
 import DesktopTab from "./components/DesktopTab";
@@ -12,97 +11,31 @@ function App() {
   const [todoArray, setTodoArray] = useState(
     JSON.parse(localStorage.getItem("todos")) || []
   );
-  // const [todos, setTodos] = useState(todoArray);
-  const [formData, setFormData] = useState({ todo: "" });
   const [currentTab, setCurrentTab] = useState("all");
 
-  const { darkTheme, setDarkTheme } = useContext(darkThemeProvider);
-  const toggleDarkTheme = () => setDarkTheme(prev => !prev);
+  const { darkTheme} = useContext(darkThemeProvider);
+ 
 
-  // for current number of active
   const activeTodosCount = todoArray.filter(todo => !todo.isCompleted).length;
 
-  // for handling tabs
-  // useEffect(() => {
-  //   if (currentTab === "all") {
-  //     setTodos(todoArray);
-  //   }
-  //   if (currentTab === "active") {
-  //     setTodos(todoArray.filter(todo => !todo.isCompleted));
-  //   }
+  const todos = checkTabs(currentTab);
 
-  //   if (currentTab === "completed") {
-  //     setTodos(todoArray.filter(todo => todo.isCompleted === true));
-  //   }
-  // }, [currentTab, todoArray]);
-
-  const checkTabs = (currentTab) => {
-    if (currentTab === "all") {
-      // setTodos(todoArray);
-      return todoArray
+  function checkTabs(tab) {
+    if (tab === "all") {
+      return todoArray;
     }
-    if (currentTab === "active") {
-      // setTodos(todoArray.filter(todo => !todo.isCompleted));
-      return todoArray.filter(todo => !todo.isCompleted)
+    if (tab === "active") {
+      return todoArray.filter(todo => !todo.isCompleted);
     }
 
-    if (currentTab === "completed") {
-      // setTodos(todoArray.filter(todo => todo.isCompleted === true));
-      return todoArray.filter(todo => todo.isCompleted === true)
+    if (tab === "completed") {
+      return todoArray.filter(todo => todo.isCompleted);
     }
   }
-
-  const todos = checkTabs(currentTab)
-  const handleChange = e => {
-    e.preventDefault();
-    setFormData(prev => {
-      return { ...prev, [e.target.name]: e.target.value };
-    });
-  };
-
-  // adding todos to list when enter is pressed
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (formData.todo) {
-      const newTodo = {
-        task: formData.todo,
-        id: nanoid(),
-        isCompleted: false,
-      };
-      setTodoArray(prev => [newTodo, ...prev]);
-      // setTodos(prev => [newTodo, ...prev]);
-      setFormData({ todo: "" });
-    }
-  };
-
-  // addng the todo to local storage after enter key is pressed
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todoArray));
-  }, [todoArray]);
-
-  const handleClick = id => {
-    const currentTodo = todoArray.map(todo => {
-      if (id === todo.id) {
-        return { ...todo, isCompleted: !todo.isCompleted };
-      }
-      return todo;
-    });
-
-    setTodoArray(currentTodo);
-    // setTodos(currentTodo);
-  };
-
-  const handleCurrentTab = tab => setCurrentTab(tab);
 
   const handleCompleted = () => {
     const incompleteTodos = todoArray.filter(todo => !todo.isCompleted);
     setTodoArray(incompleteTodos);
-    // setTodos(incompleteTodos);
-  };
-  const handleDelete = id => {
-    const todosLeft = todoArray.filter(todo => todo.id !== id);
-    setTodoArray(todosLeft);
-    // setTodos(todosLeft);
   };
 
   // drag n drop
@@ -133,18 +66,14 @@ function App() {
         }
       >
         <div className=" w-[90vw] lg:w-4/5 xl:w-3/5 max-w-[800px] mx-auto  h-[90vh] lg:h-[75vh] ">
-          <Header toggleDarkTheme={toggleDarkTheme} />
-          <Form
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-          />
+          <Header/>
+          <Form setTodoArray={setTodoArray} todoArray={todoArray} />
 
           <TodoComponent
             todos={todos}
             currentTab={currentTab}
-            handleClick={handleClick}
-            handleDelete={handleDelete}
+            todoArray={todoArray}
+            setTodoArray={setTodoArray}
           />
 
           <div
@@ -160,14 +89,14 @@ function App() {
             </p>
             <DesktopTab
               currentTab={currentTab}
-              handleCurrentTab={handleCurrentTab}
+             setCurrentTab={setCurrentTab}
             />
             <button onClick={handleCompleted}>Clear Completed</button>
           </div>
           {/* for mobile */}
           <MobileTab
             currentTab={currentTab}
-            handleCurrentTab={handleCurrentTab}
+           setCurrentTab={setCurrentTab}
           />
           <div className="text-[#4D5066] mt-10 text-center">
             Drag and drop to reorder list
